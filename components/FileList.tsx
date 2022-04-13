@@ -25,8 +25,8 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 							<tr className='border-b-2 text-left'>
 								<th>Name</th>
 								<th>CID</th>
-								<th>Upload Date</th>
-								<th>Share</th>
+								<th>{hasUpload ? 'Upload Date' : 'Date received'}</th>
+								{hasUpload && <th>Share</th>}
 							</tr>
 						</thead>
 						<tbody>
@@ -40,9 +40,11 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								</td>
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
-								<td className='cursor-pointer'>
-									<FaShareAlt />
-								</td>
+								{hasUpload && (
+									<td className='cursor-pointer'>
+										<FaShareAlt />
+									</td>
+								)}
 							</tr>
 							<tr className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'>
 								<td>
@@ -54,9 +56,11 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								</td>
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
-								<td className='cursor-pointer'>
-									<FaShareAlt />
-								</td>
+								{hasUpload && (
+									<td className='cursor-pointer'>
+										<FaShareAlt />
+									</td>
+								)}
 							</tr>
 							<tr className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'>
 								<td>
@@ -68,9 +72,11 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								</td>
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
-								<td className='cursor-pointer'>
-									<FaShareAlt />
-								</td>
+								{hasUpload && (
+									<td className='cursor-pointer'>
+										<FaShareAlt />
+									</td>
+								)}
 							</tr>
 						</tbody>
 					</table>

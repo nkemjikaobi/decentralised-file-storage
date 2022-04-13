@@ -33,7 +33,7 @@ const Dashboard: NextPage = () => {
 						<hr />
 						<FileList
 							title='My files'
-							setUploadFileModal={setUploadFileModal}
+                            setUploadFileModal={setUploadFileModal}
 						/>
 						<FileList title='Shared with me' hasUpload={false} />
 					</section>
