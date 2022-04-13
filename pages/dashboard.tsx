@@ -4,10 +4,12 @@ import { useState } from 'react';
 import FileList from '../components/FileList';
 import ShareModal from '../components/modals/ShareModal';
 import UploadFileModal from '../components/modals/UploadFileModal';
+import { useRouter } from 'next/router';
 
 const Dashboard: NextPage = () => {
 	const [uploadFileModal, setUploadFileModal] = useState<boolean>(false);
 	const [shareModal, setShareModal] = useState<boolean>(false);
+	const router = useRouter();
 
 	return (
 		<div>
@@ -24,7 +26,12 @@ const Dashboard: NextPage = () => {
 					}`}
 				>
 					<nav className='flex justify-between items-center'>
-						<h2 className='text-4xl font-bold text-center'>Dinata</h2>
+						<h2
+							className='text-4xl font-bold text-center cursor-pointer'
+							onClick={() => router.push('/')}
+						>
+							Dinata
+						</h2>
 						<button className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'>
 							Logout
 						</button>
