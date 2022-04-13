@@ -10,9 +10,17 @@ const Home: NextPage = () => {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
-      <main>
-        Vamoss
-      </main>
+			<main className='container w-600 my-96'>
+				<h2 className='text-6xl font-extrabold text-center'>
+					Welcome to Dinata
+				</h2>
+				<p className='text-center text-2xl mt-8'>
+					The number one decentralised file storage built on web3
+				</p>
+				<button className='flex justify-center items-center mt-10 bg-sky-500 p-5 w-full text-2xl rounded-lg hover:bg-sky-900'>
+					Login
+				</button>
+			</main>
 		</div>
 	);
 };
