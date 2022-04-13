@@ -2,10 +2,12 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
 import FileList from '../components/FileList';
+import ShareModal from '../components/modals/ShareModal';
 import UploadFileModal from '../components/modals/UploadFileModal';
 
 const Dashboard: NextPage = () => {
 	const [uploadFileModal, setUploadFileModal] = useState<boolean>(false);
+	const [shareModal, setShareModal] = useState<boolean>(false);
 
 	return (
 		<div>
@@ -16,7 +18,11 @@ const Dashboard: NextPage = () => {
 			</Head>
 
 			<main className='container mt-4 '>
-				<div className={`${uploadFileModal && 'blur-lg'}`}>
+				<div
+					className={`${uploadFileModal && 'blur-lg'} ${
+						shareModal && 'blur-lg'
+					}`}
+				>
 					<nav className='flex justify-between items-center'>
 						<h2 className='text-4xl font-bold text-center'>Dinata</h2>
 						<button className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'>
@@ -33,7 +39,8 @@ const Dashboard: NextPage = () => {
 						<hr />
 						<FileList
 							title='My files'
-                            setUploadFileModal={setUploadFileModal}
+							setUploadFileModal={setUploadFileModal}
+							setShareModal={setShareModal}
 						/>
 						<FileList title='Shared with me' hasUpload={false} />
 					</section>
@@ -41,6 +48,11 @@ const Dashboard: NextPage = () => {
 				{uploadFileModal && (
 					<div className='absolute top-1/4 left-1/4 ml-64'>
 						<UploadFileModal setUploadFileModal={setUploadFileModal} />
+					</div>
+				)}
+				{shareModal && (
+					<div className='absolute top-1/4 left-1/4 ml-64'>
+						<ShareModal setShareModal={setShareModal} />
 					</div>
 				)}
 			</main>

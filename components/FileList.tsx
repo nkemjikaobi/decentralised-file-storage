@@ -2,7 +2,12 @@ import Link from 'next/link';
 import React from 'react';
 import { FaShareAlt } from 'react-icons/fa';
 
-const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
+const FileList = ({
+	title,
+	hasUpload,
+	setUploadFileModal,
+	setShareModal,
+}: any) => {
 	return (
 		<div className='my-8'>
 			<div className='flex justify-between items-baseline'>
@@ -41,7 +46,10 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
 								{hasUpload && (
-									<td className='cursor-pointer'>
+									<td
+										className='cursor-pointer'
+										onClick={() => setShareModal(true)}
+									>
 										<FaShareAlt />
 									</td>
 								)}
@@ -57,7 +65,10 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
 								{hasUpload && (
-									<td className='cursor-pointer'>
+									<td
+										className='cursor-pointer'
+										onClick={() => setShareModal(true)}
+									>
 										<FaShareAlt />
 									</td>
 								)}
@@ -73,7 +84,10 @@ const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
 								<td>4/13/2022</td>
 								{hasUpload && (
-									<td className='cursor-pointer'>
+									<td
+										className='cursor-pointer'
+										onClick={() => setShareModal(true)}
+									>
 										<FaShareAlt />
 									</td>
 								)}
