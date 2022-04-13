@@ -1,22 +1,19 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import { FaShareAlt } from 'react-icons/fa';
 
-const FileList = ({ title, hasUpload }: any) => {
-    const [addModal, setAddModal] = useState<boolean>(false);
+const FileList = ({ title, hasUpload, setUploadFileModal }: any) => {
 	return (
 		<div className='my-8'>
 			<div className='flex justify-between items-baseline'>
 				<h4 className='text-xl'>{title}</h4>
 				{hasUpload && (
-					<label className='h-full cursor-pointer bg-sky-500 flex text-white justify-center items-center  w-48   px-5 py-3 text-base rounded-lg hover:bg-sky-900'>
-						<input
-							className='bg-gray-200 hidden p-5 border border-gray-300 rounded-md w-2/3 focus:border-black focus:outline-black'
-							type='file'
-							//onChange={e => handleImage(e)}
-						/>
+					<button
+						className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'
+						onClick={() => setUploadFileModal(true)}
+					>
 						Upload
-					</label>
+					</button>
 				)}
 			</div>
 
@@ -79,11 +76,6 @@ const FileList = ({ title, hasUpload }: any) => {
 					</table>
 				</div>
 			</div>
-			{addModal && (
-				<div className='absolute top-1/4 left-1/4 ml-64'>
-					<AddAdminModal setAddModal={setAddModal} />
-				</div>
-			)}
 		</div>
 	);
 };

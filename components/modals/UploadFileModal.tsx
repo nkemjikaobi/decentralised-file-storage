@@ -1,33 +1,28 @@
 import React from 'react';
+import { AiOutlineClose, AiFillFileAdd } from 'react-icons/ai';
 
-const UploadFileModal = ({ setUploadFile }: any) => {
-
+const UploadFileModal = ({ setUploadFileModal }: any) => {
 	return (
 		<>
 			<div className='text-white bg-zinc-600 rounded-lg p-10'>
-				<div className='mb-4'>
-					<label className='block font-bold text-base mb-2' htmlFor=''>
-						Name
-					</label>
-					<input
-						type='text'
-						className='bg-zinc-900 text-white rounded-lg p-5 border border-stone-400'
-						placeholder='address of the wallet'
-						// value={userAddress}
-						// onChange={e => setAddress(e.target.value)}
-					/>
+				<div className='flex justify-end items-center cursor-pointer'>
+					<AiOutlineClose onClick={() => setUploadFileModal(false)} />
 				</div>
-			</div>
-			<div className='mt-8 flex  flex-col items-center justify-between'>
-				<button className='bg-blue-700 text-white flex items-center justify-center rounded-lg p-5 mt-4 w-full mb-4'>
-					Add
-				</button>
-				<button
-					className='bg-black flex items-center justify-center rounded-lg p-5 w-full'
-					onClick={() => setUploadFile(false)}
-				>
-					Back
-				</button>
+				<div>
+					<div className='flex items-center justify-center mt-8'>
+						<AiFillFileAdd className='text-6xl text-center mb-4' />
+					</div>
+					<h3>Select a file to upload</h3>
+					<label className='h-full cursor-pointer mt-8 bg-sky-500 flex text-white justify-center items-center  w-48   px-5 py-3 text-base rounded-lg hover:bg-sky-900'>
+						<input
+							className='bg-gray-200 hidden p-5 border border-gray-300 rounded-md w-2/3 focus:border-black focus:outline-black'
+							type='file'
+							//onChange={e => handleImage(e)}
+						/>
+						Select file
+					</label>
+					<p className='text-center mt-4'>5.png</p>
+				</div>
 			</div>
 		</>
 	);
