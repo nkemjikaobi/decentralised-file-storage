@@ -10,6 +10,7 @@ import {
 	MONITOR_ACCOUNT_CHANGED,
 	MONITOR_DISCONNECT,
 	LOAD_CONTRACT,
+	UPLOAD_FILE,
 } from '../types';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -84,6 +85,7 @@ const WalletState = (props: any) => {
 				});
 				localStorage.setItem('isWalletConnected', 'true');
 				localStorage.setItem('count', '1');
+				loadContract(web3);
 				router.push('/dashboard');
 			}
 		} catch (error) {
@@ -97,8 +99,6 @@ const WalletState = (props: any) => {
 	//Load Contract
 	const loadContract = async (web3: any) => {
 		try {
-			// console.log(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS);
-			// console.log(NFTJson);
 			const contract = new web3.eth.Contract(
 				NFTJson,
 				`${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`
@@ -107,6 +107,30 @@ const WalletState = (props: any) => {
 				type: LOAD_CONTRACT,
 				payload: contract,
 			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
+
+	//Upload File
+	const uploadFile = async (
+		contract: any,
+		path: string,
+		fileName: string,
+		date: string,
+		address: string
+	) => {
+		try {
+			await contract.methods.uploadFile(path, fileName, date).send({
+				from: address,
+			});
+
+			// dispatch({
+			// 	type: UPLOAD_FILE,
+			// });
 		} catch (error) {
 			dispatch({
 				type: ERROR,
@@ -137,7 +161,7 @@ const WalletState = (props: any) => {
 		});
 		localStorage.removeItem('isWalletConnected');
 		localStorage.removeItem('count');
-		router.push("/");
+		router.push('/');
 	};
 
 	//Monitor disconnect
@@ -184,6 +208,7 @@ const WalletState = (props: any) => {
 				monitorAccountChanged,
 				monitorDisconnect,
 				loadContract,
+				uploadFile,
 			}}
 		>
 			{props.children}

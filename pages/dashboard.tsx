@@ -22,8 +22,26 @@ const Dashboard: NextPage = () => {
 		clearMessage,
 		clearError,
 		address,
+		connectWallet,
 	} = walletContext;
 	const router = useRouter();
+
+	const reconnectWallet = async () => {
+		await connectWallet(router);
+	};
+
+	//Reconnect wallet on page refresh
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted && localStorage?.getItem('isWalletConnected') === 'true') {
+			reconnectWallet();
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	}, []);
 	//Handle Messages
 	useEffect(() => {
 		let mounted = true;
