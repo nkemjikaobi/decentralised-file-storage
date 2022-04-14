@@ -4,20 +4,27 @@ import { FaShareAlt } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import toast, { Toaster } from 'react-hot-toast';
 
+interface IFileList {
+	title: string;
+	hasUpload?: boolean;
+	setUploadFileModal: Function;
+	setShareModal: Function;
+	data: any;
+}
 const FileList = ({
 	title,
 	hasUpload,
 	setUploadFileModal,
 	setShareModal,
 	data,
-}: any) => {
+}: IFileList) => {
 	const [value, setValue] = useState<string>('');
 	const [copied, setCopied] = useState<boolean>(false);
 
-	 const [mounted, setMounted] = useState(false);
-		useEffect(() => {
-			setMounted(true);
-		}, []);
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	return (
 		mounted && (

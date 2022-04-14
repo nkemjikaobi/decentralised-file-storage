@@ -27,6 +27,7 @@ const Dashboard: NextPage = () => {
 		contract,
 		files,
 		sharedFiles,
+		fetchSharedFiles,
 	} = walletContext;
 	const router = useRouter();
 
@@ -53,6 +54,19 @@ const Dashboard: NextPage = () => {
 
 		if (mounted && address !== null && contract !== null) {
 			fetchFiles(contract, address);
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	}, [address, contract]);
+
+	//Fetch shared files
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted && address !== null && contract !== null) {
+			fetchSharedFiles(contract, address);
 		}
 		return () => {
 			mounted = false;

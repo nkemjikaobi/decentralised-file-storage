@@ -12,6 +12,7 @@ import {
 	LOAD_CONTRACT,
 	UPLOAD_FILE,
 	FETCH_FILES,
+	FETCH_SHARED_FILES,
 } from '../types';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -158,6 +159,24 @@ const WalletState = (props: any) => {
 		}
 	};
 
+	//Fetch files
+	const fetchSharedFiles = async (contract: any, address: string) => {
+		try {
+			const res = await contract.methods
+				.retrieveUserSharedFiles(address)
+				.call();
+			dispatch({
+				type: FETCH_SHARED_FILES,
+				payload: res,
+			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
+
 	//Clear Error
 	const clearError = () => {
 		dispatch({
@@ -231,6 +250,7 @@ const WalletState = (props: any) => {
 				loadContract,
 				uploadFile,
 				fetchFiles,
+				fetchSharedFiles,
 			}}
 		>
 			{props.children}
