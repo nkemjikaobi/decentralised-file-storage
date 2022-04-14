@@ -7,6 +7,8 @@ import {
 	MONITOR_ACCOUNT_CHANGED,
 	MONITOR_DISCONNECT,
 	LOAD_CONTRACT,
+	FETCH_FILES,
+	UPLOAD_FILE,
 } from '../types';
 
 const contactReducer = (state: any, action: any) => {
@@ -26,6 +28,16 @@ const contactReducer = (state: any, action: any) => {
 			return {
 				...state,
 				contract: action.payload,
+			};
+		case FETCH_FILES:
+			return {
+				...state,
+				files: action.payload,
+			};
+		case UPLOAD_FILE:
+			return {
+				...state,
+				files: [action.payload, ...state.files],
 			};
 		case DISCONNECT_WALLET:
 			return {

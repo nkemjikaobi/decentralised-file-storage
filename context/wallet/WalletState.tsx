@@ -11,6 +11,7 @@ import {
 	MONITOR_DISCONNECT,
 	LOAD_CONTRACT,
 	UPLOAD_FILE,
+	FETCH_FILES,
 } from '../types';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -30,6 +31,8 @@ const WalletState = (props: any) => {
 		providerOptions: null,
 		web3Modal: null,
 		contract: null,
+		files: [],
+		sharedFiles: [],
 	};
 
 	const [state, dispatch] = useReducer(WalletReducer, initialState);
@@ -128,9 +131,25 @@ const WalletState = (props: any) => {
 				from: address,
 			});
 
-			// dispatch({
-			// 	type: UPLOAD_FILE,
-			// });
+			dispatch({
+				type: UPLOAD_FILE,
+			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
+
+	//Fetch files
+	const fetchFiles = async (contract: any, address: string) => {
+		try {
+			const res = await contract.methods.retrieveUserFiles(address).call();
+			dispatch({
+				type: FETCH_FILES,
+				payload: res,
+			});
 		} catch (error) {
 			dispatch({
 				type: ERROR,
@@ -201,6 +220,8 @@ const WalletState = (props: any) => {
 				providerOptions: state.providerOptions,
 				web3Modal: state.web3Modal,
 				contract: state.contract,
+				files: state.files,
+				sharedFiles: state.sharedFiles,
 				clearError,
 				connectWallet,
 				disconnectWallet,
@@ -209,6 +230,7 @@ const WalletState = (props: any) => {
 				monitorDisconnect,
 				loadContract,
 				uploadFile,
+				fetchFiles,
 			}}
 		>
 			{props.children}

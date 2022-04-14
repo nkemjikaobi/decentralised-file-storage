@@ -23,6 +23,10 @@ const Dashboard: NextPage = () => {
 		clearError,
 		address,
 		connectWallet,
+		fetchFiles,
+		contract,
+		files,
+		sharedFiles,
 	} = walletContext;
 	const router = useRouter();
 
@@ -42,6 +46,19 @@ const Dashboard: NextPage = () => {
 		};
 		//eslint-disable-next-line
 	}, []);
+
+	//Fetch files
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted && address !== null && contract !== null) {
+			fetchFiles(contract, address);
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	}, [address, contract]);
 	//Handle Messages
 	useEffect(() => {
 		let mounted = true;
@@ -109,8 +126,13 @@ const Dashboard: NextPage = () => {
 							title='My files'
 							setUploadFileModal={setUploadFileModal}
 							setShareModal={setShareModal}
+							data={files}
 						/>
-						<FileList title='Shared with me' hasUpload={false} />
+						<FileList
+							title='Shared with me'
+							hasUpload={false}
+							data={sharedFiles}
+						/>
 					</section>
 				</div>
 				{uploadFileModal && (

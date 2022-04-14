@@ -7,6 +7,7 @@ const FileList = ({
 	hasUpload,
 	setUploadFileModal,
 	setShareModal,
+	data,
 }: any) => {
 	return (
 		<div className='my-8'>
@@ -24,7 +25,6 @@ const FileList = ({
 
 			<div className='bg-white text-black rounded-lg'>
 				<div className='mt-12 p-5'>
-					{/* <table className='table-auto w-full border-separate my-table-spacing'> */}
 					<table className='table-auto w-full'>
 						<thead>
 							<tr className='border-b-2 text-left'>
@@ -35,63 +35,41 @@ const FileList = ({
 							</tr>
 						</thead>
 						<tbody>
-							<tr className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'>
-								<td className=''>
-									<Link href='#'>
-										<a href='#' className='text-sky-500'>
-											5.png
-										</a>
-									</Link>
-								</td>
-								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
-								<td>4/13/2022</td>
-								{hasUpload && (
-									<td
-										className='cursor-pointer'
-										onClick={() => setShareModal(true)}
+							{data.length > 0 ? (
+								data.map((file: any, index: number) => (
+									<tr
+										className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'
+										key={index}
 									>
-										<FaShareAlt />
-									</td>
-								)}
-							</tr>
-							<tr className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'>
-								<td>
-									<Link href='#'>
-										<a href='#' className='text-sky-500'>
-											5.png
-										</a>
-									</Link>
-								</td>
-								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
-								<td>4/13/2022</td>
-								{hasUpload && (
-									<td
-										className='cursor-pointer'
-										onClick={() => setShareModal(true)}
-									>
-										<FaShareAlt />
-									</td>
-								)}
-							</tr>
-							<tr className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'>
-								<td>
-									<Link href='#'>
-										<a href='#' className='text-sky-500'>
-											5.png
-										</a>
-									</Link>
-								</td>
-								<td>QmPiurKn34BiVT7xRsJqpCqhmybZ8pQXAsr4EZMghCdrgg</td>
-								<td>4/13/2022</td>
-								{hasUpload && (
-									<td
-										className='cursor-pointer'
-										onClick={() => setShareModal(true)}
-									>
-										<FaShareAlt />
-									</td>
-								)}
-							</tr>
+										<td className=''>
+											<Link
+												href={`${process.env.NEXT_PUBLIC_IPFS_BASE_URL}/${file.CID}`}
+											>
+												<a
+													href={`${process.env.NEXT_PUBLIC_IPFS_BASE_URL}/${file.CID}`}
+													className='text-sky-500'
+													target={'_blank'}
+													rel={'noreferrer'}
+												>
+													{file.fileName}
+												</a>
+											</Link>
+										</td>
+										<td>{file.CID}</td>
+										<td>{file.uploadDate}</td>
+										{hasUpload && (
+											<td
+												className='cursor-pointer'
+												onClick={() => setShareModal(true)}
+											>
+												<FaShareAlt />
+											</td>
+										)}
+									</tr>
+								))
+							) : (
+								<p>No files uploaded yet</p>
+							)}
 						</tbody>
 					</table>
 				</div>
@@ -102,6 +80,7 @@ const FileList = ({
 
 FileList.defaultProps = {
 	hasUpload: true,
+	data: null,
 };
 
 export default FileList;
