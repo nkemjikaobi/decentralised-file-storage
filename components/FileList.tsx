@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { FaShareAlt } from 'react-icons/fa';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import toast, { Toaster } from 'react-hot-toast';
 
 const FileList = ({
 	title,
@@ -9,8 +11,12 @@ const FileList = ({
 	setShareModal,
 	data,
 }: any) => {
+	const [value, setValue] = useState<string>('');
+	const [copied, setCopied] = useState<boolean>(false);
 	return (
 		<div className='my-8'>
+			<Toaster position='top-right' />
+
 			<div className='flex justify-between items-baseline'>
 				<h4 className='text-xl'>{title}</h4>
 				{hasUpload && (
@@ -55,7 +61,16 @@ const FileList = ({
 												</a>
 											</Link>
 										</td>
-										<td>{file.CID}</td>
+										<CopyToClipboard
+											onCopy={() => {
+												setCopied(true);
+												toast.success('CID Copied');
+											}}
+											text={file.CID}
+										>
+											<td className='cursor-pointer'>{file.CID}</td>
+										</CopyToClipboard>
+
 										<td>{file.uploadDate}</td>
 										{hasUpload && (
 											<td

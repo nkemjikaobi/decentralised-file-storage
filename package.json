@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/react-copy-to-clipboard": "^5.0.2",
     "@walletconnect/web3-provider": "^1.7.7",
     "ipfs-http-client": "^56.0.2",
     "next": "12.1.5",
     "react": "18.0.0",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.0.0",
     "react-hot-toast": "^2.2.0",
     "react-icons": "^4.3.1",
