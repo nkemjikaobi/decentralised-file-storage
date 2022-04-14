@@ -10,6 +10,7 @@ interface IFileList {
 	setUploadFileModal: Function;
 	setShareModal: Function;
 	data: any;
+	isAllFiles: boolean;
 }
 const FileList = ({
 	title,
@@ -17,6 +18,7 @@ const FileList = ({
 	setUploadFileModal,
 	setShareModal,
 	data,
+	isAllFiles,
 }: IFileList) => {
 	const [value, setValue] = useState<string>('');
 	const [copied, setCopied] = useState<boolean>(false);
@@ -25,7 +27,6 @@ const FileList = ({
 	useEffect(() => {
 		setMounted(true);
 	}, []);
-
 
 	return (
 		mounted && (
@@ -52,7 +53,7 @@ const FileList = ({
 									<th>Name</th>
 									<th>CID</th>
 									<th>{hasUpload ? 'Upload Date' : 'Date received'}</th>
-									{hasUpload && <th>Share</th>}
+									{hasUpload && !isAllFiles && <th>Share</th>}
 								</tr>
 							</thead>
 							<tbody>
@@ -87,7 +88,7 @@ const FileList = ({
 											</CopyToClipboard>
 
 											<td>{file.uploadDate}</td>
-											{hasUpload && (
+											{hasUpload && !isAllFiles && (
 												<td
 													className='cursor-pointer'
 													onClick={() => setShareModal(true)}

@@ -32,12 +32,12 @@ const contactReducer = (state: any, action: any) => {
 		case FETCH_FILES:
 			return {
 				...state,
-				files: [action.payload, ...state.files],
+				files: action.payload,
 			};
 		case UPLOAD_FILE:
 			return {
 				...state,
-				files: [action.payload, ...state.files],
+				files: action.payload,
 			};
 		case DISCONNECT_WALLET:
 			return {

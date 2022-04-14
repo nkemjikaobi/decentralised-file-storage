@@ -133,8 +133,9 @@ const WalletState = (props: any) => {
 			});
 
 			const res = await contract.methods.retrieveFiles().call();
-			let item: any = {};
-			res.map(async (dat: any) => {
+			let items: any = [];
+			res.map((dat: any) => {
+				let item: any = {};
 				item.CID = dat.CID;
 				item.fileName = dat.fileName;
 				item.id = dat.id;
@@ -142,12 +143,12 @@ const WalletState = (props: any) => {
 				item.sharedWith = dat.sharedWith;
 				item.uploadDate = dat.uploadDate;
 				item.uploadedBy = dat.uploadedBy;
-				return item;
+				items.push(item);
 			});
 
 			dispatch({
 				type: UPLOAD_FILE,
-				payload: item,
+				payload: items,
 			});
 		} catch (error) {
 			dispatch({
@@ -161,8 +162,9 @@ const WalletState = (props: any) => {
 	const fetchFiles = async (contract: any) => {
 		try {
 			const res = await contract.methods.retrieveFiles().call();
-			let item: any = {};
-			res.map(async (dat: any) => {
+			let items: any = [];
+			res.map((dat: any) => {
+				let item: any = {};
 				item.CID = dat.CID;
 				item.fileName = dat.fileName;
 				item.id = dat.id;
@@ -170,11 +172,12 @@ const WalletState = (props: any) => {
 				item.sharedWith = dat.sharedWith;
 				item.uploadDate = dat.uploadDate;
 				item.uploadedBy = dat.uploadedBy;
-				return item;
+				items.push(item);
 			});
+
 			dispatch({
 				type: FETCH_FILES,
-				payload: item,
+				payload: items,
 			});
 		} catch (error) {
 			dispatch({

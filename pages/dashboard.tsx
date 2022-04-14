@@ -12,6 +12,11 @@ import { useRouter } from 'next/router';
 const Dashboard: NextPage = () => {
 	const [uploadFileModal, setUploadFileModal] = useState<boolean>(false);
 	const [shareModal, setShareModal] = useState<boolean>(false);
+	const [counter, setCounter] = useState<number>(0);
+	const [allFiles, setAllFiles] = useState<any>([]);
+	const [myLibrary, setMyLibrary] = useState<any>([]);
+	const [shared, setShared] = useState<any>([]);
+	const [isAllFiles, setIsAllFiles] = useState<boolean>(true);
 	const walletContext = useContext(WalletContext);
 
 	const {
@@ -27,7 +32,6 @@ const Dashboard: NextPage = () => {
 		contract,
 		files,
 		sharedFiles,
-		fetchSharedFiles,
 	} = walletContext;
 	const router = useRouter();
 
@@ -51,9 +55,9 @@ const Dashboard: NextPage = () => {
 	//Fetch files
 	useEffect(() => {
 		let mounted = true;
-
-		if (mounted && address !== null && contract !== null) {
+		if (mounted && address !== null && contract !== null && counter === 0) {
 			fetchFiles(contract);
+			setCounter(3);
 		}
 		return () => {
 			mounted = false;
@@ -88,6 +92,37 @@ const Dashboard: NextPage = () => {
 		};
 		//eslint-disable-next-line
 	}, [error]);
+
+	//Filtered files
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted && files.length > 0) {
+			const filteredFiles =
+				files && files.filter((file: any) => file.isPrivate === false);
+			setAllFiles(filteredFiles);
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	}, [files]);
+
+	const handleAllFiles = () => {
+		setIsAllFiles(true);
+		const filteredFiles =
+			files && files.filter((file: any) => file.isPrivate === false);
+		setAllFiles(filteredFiles);
+	};
+
+	const handleMyLibrary = () => {
+		setIsAllFiles(false);
+		const filteredFiles =
+			files && files.filter((file: any) => file.isPrivate === true);
+		setMyLibrary(filteredFiles);
+		const shared = files && files.filter((file: any) => file.sharedWith.includes(address));
+		setShared(shared);
+	};
 
 	return (
 		<div>
@@ -124,17 +159,57 @@ const Dashboard: NextPage = () => {
 							<span className='text-2xl text-purple-600'>{address}</span>
 						</h4>
 						<hr />
-						<FileList
-							title='My files'
-							setUploadFileModal={setUploadFileModal}
-							setShareModal={setShareModal}
-							data={files}
-						/>
-						<FileList
+						<div className='mt-16 flex justify-center items-center'>
+							<button
+								className={`flex mr-4 justify-center items-center mt-10 ${
+									isAllFiles ? 'bg-sky-500' : 'border-sky-500 border'
+								}  w-48 px-5 py-3 text-base rounded-lg`}
+								onClick={() => handleAllFiles()}
+							>
+								All Files
+							</button>
+							<button
+								className={`flex justify-center items-center mt-10 ${
+									isAllFiles ? 'border-sky-500 border' : ' bg-sky-500'
+								} w-48 px-5 py-3 text-base rounded-lg`}
+								onClick={() => handleMyLibrary()}
+							>
+								My Library
+							</button>
+						</div>
+						{isAllFiles && (
+							<FileList
+								title='All Files'
+								data={allFiles}
+								setUploadFileModal={setUploadFileModal}
+								setShareModal={setShareModal}
+								isAllFiles={isAllFiles}
+							/>
+						)}
+						{!isAllFiles && (
+							<FileList
+								title='My Files'
+								setUploadFileModal={setUploadFileModal}
+								setShareModal={setShareModal}
+								isAllFiles={isAllFiles}
+								data={myLibrary}
+							/>
+						)}
+						{!isAllFiles && (
+							<FileList
+								title='Shared with me'
+								setUploadFileModal={setUploadFileModal}
+								setShareModal={setShareModal}
+								isAllFiles={isAllFiles}
+								data={shared}
+								hasUpload={false}
+							/>
+						)}
+						{/* <FileList
 							title='Shared with me'
 							hasUpload={false}
 							data={sharedFiles}
-						/>
+						/>  */}
 					</section>
 				</div>
 				{uploadFileModal && (
