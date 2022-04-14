@@ -9,7 +9,6 @@ import {
 	LOAD_CONTRACT,
 	FETCH_FILES,
 	UPLOAD_FILE,
-	FETCH_SHARED_FILES,
 } from '../types';
 
 const contactReducer = (state: any, action: any) => {
@@ -33,12 +32,7 @@ const contactReducer = (state: any, action: any) => {
 		case FETCH_FILES:
 			return {
 				...state,
-				files: action.payload,
-			};
-		case FETCH_SHARED_FILES:
-			return {
-				...state,
-				sharedFiles: action.payload,
+				files: [action.payload, ...state.files],
 			};
 		case UPLOAD_FILE:
 			return {

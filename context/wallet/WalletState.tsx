@@ -12,7 +12,6 @@ import {
 	LOAD_CONTRACT,
 	UPLOAD_FILE,
 	FETCH_FILES,
-	FETCH_SHARED_FILES,
 } from '../types';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -125,15 +124,30 @@ const WalletState = (props: any) => {
 		path: string,
 		fileName: string,
 		date: string,
-		address: string
+		address: string,
+		isPrivate: boolean
 	) => {
 		try {
-			await contract.methods.uploadFile(path, fileName, date).send({
+			await contract.methods.uploadFile(path, fileName, date, isPrivate).send({
 				from: address,
+			});
+
+			const res = await contract.methods.retrieveFiles().call();
+			let item: any = {};
+			res.map(async (dat: any) => {
+				item.CID = dat.CID;
+				item.fileName = dat.fileName;
+				item.id = dat.id;
+				item.isPrivate = dat.isPrivate;
+				item.sharedWith = dat.sharedWith;
+				item.uploadDate = dat.uploadDate;
+				item.uploadedBy = dat.uploadedBy;
+				return item;
 			});
 
 			dispatch({
 				type: UPLOAD_FILE,
+				payload: item,
 			});
 		} catch (error) {
 			dispatch({
@@ -144,30 +158,23 @@ const WalletState = (props: any) => {
 	};
 
 	//Fetch files
-	const fetchFiles = async (contract: any, address: string) => {
+	const fetchFiles = async (contract: any) => {
 		try {
-			const res = await contract.methods.retrieveUserFiles(address).call();
+			const res = await contract.methods.retrieveFiles().call();
+			let item: any = {};
+			res.map(async (dat: any) => {
+				item.CID = dat.CID;
+				item.fileName = dat.fileName;
+				item.id = dat.id;
+				item.isPrivate = dat.isPrivate;
+				item.sharedWith = dat.sharedWith;
+				item.uploadDate = dat.uploadDate;
+				item.uploadedBy = dat.uploadedBy;
+				return item;
+			});
 			dispatch({
 				type: FETCH_FILES,
-				payload: res,
-			});
-		} catch (error) {
-			dispatch({
-				type: ERROR,
-				payload: (error as Error).message,
-			});
-		}
-	};
-
-	//Fetch files
-	const fetchSharedFiles = async (contract: any, address: string) => {
-		try {
-			const res = await contract.methods
-				.retrieveUserSharedFiles(address)
-				.call();
-			dispatch({
-				type: FETCH_SHARED_FILES,
-				payload: res,
+				payload: item,
 			});
 		} catch (error) {
 			dispatch({
@@ -250,7 +257,6 @@ const WalletState = (props: any) => {
 				loadContract,
 				uploadFile,
 				fetchFiles,
-				fetchSharedFiles,
 			}}
 		>
 			{props.children}

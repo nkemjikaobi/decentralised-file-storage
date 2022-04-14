@@ -9,6 +9,7 @@ const UploadFileModal = ({ setUploadFileModal }: any) => {
 	const [path, setPath] = useState<string>('');
 	const [imageLoading, setImageLoading] = useState<boolean>(false);
 	const [image, setImage] = useState<any>(null);
+	const [isPrivate, setIsPrivate] = useState<any>(false);
 	const [nameOfFile, setNameOfFile] = useState<string>('');
 	const create: any = ipfsClient.create;
 	const client = create(`${process.env.NEXT_PUBLIC_IPFS_URL}`);
@@ -28,7 +29,16 @@ const UploadFileModal = ({ setUploadFileModal }: any) => {
 				progress: (prog: any) => console.log(`received: ${prog}`),
 			});
 			setPath(res.path);
-			await uploadFile(contract, res.path, nameOfFile, new Date(), address);
+			const date = new Date();
+			const formattedDate = date.toString();
+			await uploadFile(
+				contract,
+				res.path,
+				nameOfFile,
+				formattedDate,
+				address,
+				isPrivate
+			);
 			setImageLoading(false);
 			toast.success('File Uploaded');
 			setUploadFileModal(false);
@@ -62,11 +72,21 @@ const UploadFileModal = ({ setUploadFileModal }: any) => {
 					{image !== null && (
 						<div>
 							<input
-								className='mt-7 h-8 rounded-lg text-black px-2 py-5'
+								className='mt-7 h-8 rounded-lg text-black px-2 py-5 block'
 								type='text'
 								value={nameOfFile}
 								onChange={e => setNameOfFile(e.target.value)}
 							/>
+							<div className='flex items-baseline justify-center'>
+								<label htmlFor='' className='mr-4'>
+									Upload as Private
+								</label>
+								<input
+									type='checkbox'
+									className='mt-8'
+									onChange={e => setIsPrivate(e.target.checked)}
+								/>
+							</div>
 							<button
 								className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'
 								onClick={() => handleUpload()}

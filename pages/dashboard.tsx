@@ -53,7 +53,7 @@ const Dashboard: NextPage = () => {
 		let mounted = true;
 
 		if (mounted && address !== null && contract !== null) {
-			fetchFiles(contract, address);
+			fetchFiles(contract);
 		}
 		return () => {
 			mounted = false;
@@ -61,18 +61,6 @@ const Dashboard: NextPage = () => {
 		//eslint-disable-next-line
 	}, [address, contract]);
 
-	//Fetch shared files
-	useEffect(() => {
-		let mounted = true;
-
-		if (mounted && address !== null && contract !== null) {
-			fetchSharedFiles(contract, address);
-		}
-		return () => {
-			mounted = false;
-		};
-		//eslint-disable-next-line
-	}, [address, contract]);
 	//Handle Messages
 	useEffect(() => {
 		let mounted = true;

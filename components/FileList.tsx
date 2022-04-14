@@ -26,6 +26,7 @@ const FileList = ({
 		setMounted(true);
 	}, []);
 
+
 	return (
 		mounted && (
 			<div className='my-8'>
@@ -98,7 +99,11 @@ const FileList = ({
 									))
 								) : (
 									<tr>
-										<td>No files uploaded yet</td>
+										<td>
+											{hasUpload
+												? 'No files uploaded yet'
+												: 'No files shared with you yet'}
+										</td>
 									</tr>
 								)}
 							</tbody>
