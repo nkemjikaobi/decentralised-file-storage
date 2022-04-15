@@ -21,6 +21,11 @@ contract FileSpace {
     /// Definition of array to hold all records
     fileInfo[] private allFiles;
 
+    event SharedFile(uint indexed fileID, string CID, address to);
+    event UploadedFile(uint indexed fileID, string CID, string fileName);
+    event MadePublic(uint fileID, string CID, string fileName);
+    event MadePrivate(uint fileID, string CID, string fileName);
+
 
     constructor() {
     }
@@ -30,6 +35,7 @@ contract FileSpace {
     function uploadFile(string memory _CID, string memory _fileName, string memory _uploadDate, bool _isPrivate) public {
         uint id_ = allFiles.length + 1;
         allFiles.push(fileInfo({id: id_, CID: _CID, fileName: _fileName, uploadDate: _uploadDate, uploadedBy: msg.sender, isPrivate: _isPrivate, sharedWith: new address[](0)}));
+        emit UploadedFile(id_, _CID, _fileName);
     }
 
     /// Share files that are private to user to other users, but not the same user.
@@ -37,6 +43,7 @@ contract FileSpace {
         require(allFiles[fileID - 1].isPrivate == true, "Only private files can be shared");
         require(msg.sender != to, "You can't share to yourself");
         allFiles[fileID - 1].sharedWith.push(to);
+        emit SharedFile(fileID, allFiles[fileID - 1].CID, to);
     }
 
     /// return all file metadata
@@ -53,6 +60,7 @@ contract FileSpace {
     function privatizeFile(uint fileID) public {
         require(allFiles[fileID - 1].isPrivate == false, "This file is already private");
         updateBool(fileID, true);
+        emit MadePrivate(fileID, allFiles[fileID - 1].CID, allFiles[fileID].fileName);
     }
 
     /// Change a private file to Public visibility. Will also unshare from previously shared users.
@@ -60,6 +68,7 @@ contract FileSpace {
         require(allFiles[fileID - 1].isPrivate == true, "This file is already public");
         allFiles[fileID - 1].sharedWith = new address[](0);
         updateBool(fileID, false);
+        emit MadePublic(fileID, allFiles[fileID - 1].CID, allFiles[fileID].fileName);
     }
 
 
