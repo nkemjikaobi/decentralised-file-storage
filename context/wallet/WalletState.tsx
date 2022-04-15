@@ -12,6 +12,10 @@ import {
 	LOAD_CONTRACT,
 	UPLOAD_FILE,
 	FETCH_FILES,
+	PRIVATIZE_FILE,
+	PUBLICIZE_FILE,
+	CLEAR_SEARCH,
+	SEARCH,
 } from '../types';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -33,6 +37,7 @@ const WalletState = (props: any) => {
 		contract: null,
 		files: [],
 		sharedFiles: [],
+		searchedFiles: [],
 	};
 
 	const [state, dispatch] = useReducer(WalletReducer, initialState);
@@ -186,6 +191,68 @@ const WalletState = (props: any) => {
 			});
 		}
 	};
+	//Privatize file
+	const privatizeFiles = async (contract: any, address: string, id: any) => {
+		try {
+			await contract.methods.privatizeFile(id).send({
+				from: address,
+			});
+			const res = await contract.methods.retrieveFiles().call();
+			let items: any = [];
+			res.map((dat: any) => {
+				let item: any = {};
+				item.CID = dat.CID;
+				item.fileName = dat.fileName;
+				item.id = dat.id;
+				item.isPrivate = dat.isPrivate;
+				item.sharedWith = dat.sharedWith;
+				item.uploadDate = dat.uploadDate;
+				item.uploadedBy = dat.uploadedBy;
+				items.push(item);
+			});
+
+			dispatch({
+				type: PRIVATIZE_FILE,
+				payload: items.reverse(),
+			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
+	//Publicize file
+	const publicizeFiles = async (contract: any, address: string, id: any) => {
+		try {
+			await contract.methods.publicizeFile(id).send({
+				from: address,
+			});
+			const res = await contract.methods.retrieveFiles().call();
+			let items: any = [];
+			res.map((dat: any) => {
+				let item: any = {};
+				item.CID = dat.CID;
+				item.fileName = dat.fileName;
+				item.id = dat.id;
+				item.isPrivate = dat.isPrivate;
+				item.sharedWith = dat.sharedWith;
+				item.uploadDate = dat.uploadDate;
+				item.uploadedBy = dat.uploadedBy;
+				items.push(item);
+			});
+
+			dispatch({
+				type: PUBLICIZE_FILE,
+				payload: items.reverse(),
+			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
 
 	//Share file
 	const shareFile = async (
@@ -255,6 +322,19 @@ const WalletState = (props: any) => {
 		});
 	};
 
+	const clearSearch = () => {
+		dispatch({
+			type: CLEAR_SEARCH,
+		});
+	};
+
+	const search = (text: any) => {
+		dispatch({
+			type: SEARCH,
+			payload: text,
+		});
+	};
+
 	return (
 		<WalletContext.Provider
 			value={{
@@ -270,6 +350,7 @@ const WalletState = (props: any) => {
 				contract: state.contract,
 				files: state.files,
 				sharedFiles: state.sharedFiles,
+				searchedFiles: state.searchedFiles,
 				clearError,
 				connectWallet,
 				disconnectWallet,
@@ -280,6 +361,10 @@ const WalletState = (props: any) => {
 				uploadFile,
 				fetchFiles,
 				shareFile,
+				privatizeFiles,
+				publicizeFiles,
+				clearSearch,
+				search,
 			}}
 		>
 			{props.children}

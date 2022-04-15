@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { FaShareAlt } from 'react-icons/fa';
+import React, { useEffect, useState, useContext } from 'react';
+import { FaShareAlt, FaSpinner } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import toast, { Toaster } from 'react-hot-toast';
+import WalletContext from 'context/wallet/WalletContext';
 
 interface IFileList {
 	title: string;
@@ -24,11 +26,65 @@ const FileList = ({
 }: IFileList) => {
 	const [value, setValue] = useState<string>('');
 	const [copied, setCopied] = useState<boolean>(false);
+	const [loading, setLoading] = useState(false);
+	const [active, setActive] = useState();
+	const [uploadedByMe, setUploadedByMe] = useState<boolean>(false);
+	const [filtered, setFiltered] = useState<any>([]);
+
+	const walletContext = useContext(WalletContext);
+
+	const { address, privatizeFiles, publicizeFiles, contract, searchedFiles } =
+		walletContext;
 
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => {
 		setMounted(true);
 	}, []);
+
+	const handleClick = async (type: any, id: any) => {
+		setActive(id);
+		if (type === true) {
+			try {
+				setLoading(true);
+				await publicizeFiles(contract, address, id);
+				setLoading(false);
+			} catch (error) {
+				toast.error((error as Error).message);
+				setLoading(false);
+			}
+		} else {
+			try {
+				setLoading(true);
+				await privatizeFiles(contract, address, id);
+				setLoading(false);
+			} catch (error) {
+				toast.error((error as Error).message);
+				setLoading(false);
+			}
+		}
+	};
+
+	//Filter uploaded by me
+	useEffect(() => {
+		let mounted = true;
+		// if (
+		// 	mounted &&
+		// 	data.length > 0 &&
+		// 	searchedFiles.length > 0
+		// ) {
+		// 	setFiltered(searchedFiles);
+		if (mounted && uploadedByMe && data.length > 0) {
+			const filteredFiles =
+				data && data.filter((file: any) => file.uploadedBy === address);
+			setFiltered(filteredFiles);
+		} else {
+			setFiltered(data);
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	});
 
 	return (
 		mounted && (
@@ -37,6 +93,16 @@ const FileList = ({
 
 				<div className='flex justify-between items-baseline'>
 					<h4 className='text-xl'>{title}</h4>
+					{isAllFiles && (
+						<div>
+							<label className='mr-4'>Uploaded by me</label>
+							<input
+								type='checkbox'
+								onChange={e => setUploadedByMe(e.target.checked)}
+							/>
+						</div>
+					)}
+
 					{hasUpload && (
 						<button
 							className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'
@@ -59,8 +125,8 @@ const FileList = ({
 								</tr>
 							</thead>
 							<tbody>
-								{data.length > 0 ? (
-									data.map((file: any, index: number) => (
+								{filtered.length > 0 ? (
+									filtered.map((file: any, index: number) => (
 										<tr
 											className='border-b-2 h-16 hover:bg-gray-200 text-gray-600'
 											key={index}
@@ -99,6 +165,25 @@ const FileList = ({
 													}}
 												>
 													<FaShareAlt />
+												</td>
+											)}
+											{file.uploadedBy === address && (
+												<td>
+													<button
+														className='flex justify-center text-white mb-4 items-center mt-10 bg-sky-500 w-32 py-2 text-base rounded-lg hover:bg-sky-900'
+														onClick={() => handleClick(file.isPrivate, file.id)}
+													>
+														{loading && file.id === active ? (
+															<>
+																<FaSpinner className='animate-spin h-5 w-5 mr-3' />
+																Converting...
+															</>
+														) : file.isPrivate ? (
+															'Make Public'
+														) : (
+															'Make Private'
+														)}
+													</button>
 												</td>
 											)}
 										</tr>

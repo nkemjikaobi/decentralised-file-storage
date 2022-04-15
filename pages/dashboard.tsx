@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import FileList from '../components/FileList';
 import ShareModal from '../components/modals/ShareModal';
 import UploadFileModal from '../components/modals/UploadFileModal';
@@ -10,6 +10,8 @@ import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const Dashboard: NextPage = () => {
+	const [filesToWorkWith, setFilesToWorkWith] = useState<any>();
+
 	const [uploadFileModal, setUploadFileModal] = useState<boolean>(false);
 	const [shareModal, setShareModal] = useState<boolean>(false);
 	const [counter, setCounter] = useState<number>(0);
@@ -17,6 +19,7 @@ const Dashboard: NextPage = () => {
 	const [myLibrary, setMyLibrary] = useState<any>([]);
 	const [shared, setShared] = useState<any>([]);
 	const [isAllFiles, setIsAllFiles] = useState<boolean>(true);
+	const [isMyLibrary, setIsMyLibrary] = useState<boolean>(false);
 	const [activeId, setActiveId] = useState<number>();
 	const walletContext = useContext(WalletContext);
 
@@ -33,6 +36,9 @@ const Dashboard: NextPage = () => {
 		contract,
 		files,
 		sharedFiles,
+		searchedFiles,
+		clearSearch,
+		search,
 	} = walletContext;
 	const router = useRouter();
 
@@ -98,35 +104,77 @@ const Dashboard: NextPage = () => {
 	useEffect(() => {
 		let mounted = true;
 
-		if (mounted && files.length > 0) {
+		if (mounted && filesToWorkWith !== undefined) {
 			const filteredFiles =
-				files && files.filter((file: any) => file.isPrivate === false);
+				filesToWorkWith &&
+				filesToWorkWith.filter((file: any) => file.isPrivate === false);
 			setAllFiles(filteredFiles);
 		}
 		return () => {
 			mounted = false;
 		};
 		//eslint-disable-next-line
-	}, [files]);
+	}, [filesToWorkWith]);
+
+	//Files to work with
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted && searchedFiles.length > 0) {
+			setFilesToWorkWith(searchedFiles);
+		} else {
+			setFilesToWorkWith(files);
+		}
+		return () => {
+			mounted = false;
+		};
+		//eslint-disable-next-line
+	}, [searchedFiles, files]);
 
 	const handleAllFiles = () => {
 		setIsAllFiles(true);
+		setIsMyLibrary(false);
 		const filteredFiles =
-			files && files.filter((file: any) => file.isPrivate === false);
+			filesToWorkWith &&
+			filesToWorkWith.filter((file: any) => file.isPrivate === false);
 		setAllFiles(filteredFiles);
 	};
 
 	const handleMyLibrary = () => {
 		setIsAllFiles(false);
+		setIsMyLibrary(true);
 		const filteredFiles =
-			files &&
-			files.filter(
+			filesToWorkWith &&
+			filesToWorkWith.filter(
 				(file: any) => file.isPrivate === true && file.uploadedBy === address
 			);
 		setMyLibrary(filteredFiles);
 		const shared =
-			files && files.filter((file: any) => file.sharedWith.includes(address));
+			filesToWorkWith &&
+			filesToWorkWith.filter((file: any) => file.sharedWith.includes(address));
 		setShared(shared);
+	};
+
+	const [text, setText] = useState<string>('');
+
+	useEffect(() => {
+		if (searchedFiles.length === 0) {
+			text === '';
+		}
+
+		//eslint-disable-next-line
+	}, [searchedFiles]);
+
+	const onChange = (e: any) => {
+		if (e.target.value !== '') {
+			console.log(e.target.value);
+
+			setText(e.target.value);
+			search(e.target.value);
+		} else {
+			clearSearch();
+			setText('');
+		}
 	};
 
 	return (
@@ -151,6 +199,13 @@ const Dashboard: NextPage = () => {
 						>
 							Dinata
 						</h2>
+						<input
+							type='text'
+							placeholder='Search for any file'
+							className='rounded-lg px-5 py-4 w-96 text-black'
+							value={text}
+							onChange={onChange}
+						/>
 						<button
 							className='flex justify-center items-center mt-10 bg-sky-500 w-48 px-5 py-3 text-base rounded-lg hover:bg-sky-900'
 							onClick={() => disconnectWallet(web3Modal, router)}
@@ -175,8 +230,8 @@ const Dashboard: NextPage = () => {
 							</button>
 							<button
 								className={`flex justify-center items-center mt-10 ${
-									isAllFiles ? 'border-sky-500 border' : ' bg-sky-500'
-								} w-48 px-5 py-3 text-base rounded-lg`}
+									isMyLibrary ? ' bg-sky-500' : ' border-sky-500 border'
+								} w-48 px-5 py-3 mr-5 text-base rounded-lg`}
 								onClick={() => handleMyLibrary()}
 							>
 								My Library
@@ -211,11 +266,6 @@ const Dashboard: NextPage = () => {
 								hasUpload={false}
 							/>
 						)}
-						{/* <FileList
-							title='Shared with me'
-							hasUpload={false}
-							data={sharedFiles}
-						/>  */}
 					</section>
 				</div>
 				{uploadFileModal && (

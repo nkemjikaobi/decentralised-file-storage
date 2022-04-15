@@ -9,6 +9,10 @@ import {
 	LOAD_CONTRACT,
 	FETCH_FILES,
 	UPLOAD_FILE,
+	PUBLICIZE_FILE,
+	PRIVATIZE_FILE,
+	CLEAR_SEARCH,
+	SEARCH,
 } from '../types';
 
 const contactReducer = (state: any, action: any) => {
@@ -34,11 +38,35 @@ const contactReducer = (state: any, action: any) => {
 				...state,
 				files: action.payload,
 			};
+		case PUBLICIZE_FILE:
+			return {
+				...state,
+				files: action.payload,
+			};
+		case PRIVATIZE_FILE:
+			return {
+				...state,
+				files: action.payload,
+			};
 		case UPLOAD_FILE:
 			return {
 				...state,
 				files: action.payload,
 			};
+		case SEARCH:
+			return {
+				...state,
+				searchedFiles:
+					state.files &&
+					state.files.filter((file: any) => {
+						//Ignore white spaces
+						const newString = action.payload.replace(/\s/g, '');
+						const regex = new RegExp(`${newString}`, 'gi');
+
+						return file.fileName.match(regex) || file.CID.match(regex);
+					}),
+			};
+
 		case DISCONNECT_WALLET:
 			return {
 				...state,
@@ -79,6 +107,11 @@ const contactReducer = (state: any, action: any) => {
 			return {
 				...state,
 				message: null,
+			};
+		case CLEAR_SEARCH:
+			return {
+				...state,
+				searchedFiles: [],
 			};
 		default:
 			return state;
