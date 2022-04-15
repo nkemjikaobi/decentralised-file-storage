@@ -148,7 +148,7 @@ const WalletState = (props: any) => {
 
 			dispatch({
 				type: UPLOAD_FILE,
-				payload: items,
+				payload: items.reverse(),
 			});
 		} catch (error) {
 			dispatch({
@@ -177,7 +177,26 @@ const WalletState = (props: any) => {
 
 			dispatch({
 				type: FETCH_FILES,
-				payload: items,
+				payload: items.reverse(),
+			});
+		} catch (error) {
+			dispatch({
+				type: ERROR,
+				payload: (error as Error).message,
+			});
+		}
+	};
+
+	//Share file
+	const shareFile = async (
+		contract: any,
+		id: any,
+		address: string,
+		userAddress: string
+	) => {
+		try {
+			await contract.methods.shareFile(id, userAddress).send({
+				from: address,
 			});
 		} catch (error) {
 			dispatch({
@@ -260,6 +279,7 @@ const WalletState = (props: any) => {
 				loadContract,
 				uploadFile,
 				fetchFiles,
+				shareFile,
 			}}
 		>
 			{props.children}

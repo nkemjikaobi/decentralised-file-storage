@@ -11,6 +11,7 @@ interface IFileList {
 	setShareModal: Function;
 	data: any;
 	isAllFiles: boolean;
+	setActiveId: Function;
 }
 const FileList = ({
 	title,
@@ -19,6 +20,7 @@ const FileList = ({
 	setShareModal,
 	data,
 	isAllFiles,
+	setActiveId,
 }: IFileList) => {
 	const [value, setValue] = useState<string>('');
 	const [copied, setCopied] = useState<boolean>(false);
@@ -91,7 +93,10 @@ const FileList = ({
 											{hasUpload && !isAllFiles && (
 												<td
 													className='cursor-pointer'
-													onClick={() => setShareModal(true)}
+													onClick={() => {
+														setShareModal(true);
+														setActiveId(file.id);
+													}}
 												>
 													<FaShareAlt />
 												</td>

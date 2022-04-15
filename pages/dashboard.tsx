@@ -17,6 +17,7 @@ const Dashboard: NextPage = () => {
 	const [myLibrary, setMyLibrary] = useState<any>([]);
 	const [shared, setShared] = useState<any>([]);
 	const [isAllFiles, setIsAllFiles] = useState<boolean>(true);
+	const [activeId, setActiveId] = useState<number>();
 	const walletContext = useContext(WalletContext);
 
 	const {
@@ -118,9 +119,13 @@ const Dashboard: NextPage = () => {
 	const handleMyLibrary = () => {
 		setIsAllFiles(false);
 		const filteredFiles =
-			files && files.filter((file: any) => file.isPrivate === true);
+			files &&
+			files.filter(
+				(file: any) => file.isPrivate === true && file.uploadedBy === address
+			);
 		setMyLibrary(filteredFiles);
-		const shared = files && files.filter((file: any) => file.sharedWith.includes(address));
+		const shared =
+			files && files.filter((file: any) => file.sharedWith.includes(address));
 		setShared(shared);
 	};
 
@@ -193,6 +198,7 @@ const Dashboard: NextPage = () => {
 								setShareModal={setShareModal}
 								isAllFiles={isAllFiles}
 								data={myLibrary}
+								setActiveId={setActiveId}
 							/>
 						)}
 						{!isAllFiles && (
@@ -219,7 +225,7 @@ const Dashboard: NextPage = () => {
 				)}
 				{shareModal && (
 					<div className='absolute top-1/4 left-1/4 ml-64'>
-						<ShareModal setShareModal={setShareModal} />
+						<ShareModal activeId={activeId} setShareModal={setShareModal} />
 					</div>
 				)}
 			</main>
