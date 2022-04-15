@@ -13,7 +13,7 @@ interface IFileList {
 	setShareModal: Function;
 	data: any;
 	isAllFiles: boolean;
-	setActiveId: Function;
+	setActiveId?: any;
 }
 const FileList = ({
 	title,
