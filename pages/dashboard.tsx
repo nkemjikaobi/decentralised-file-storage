@@ -216,7 +216,7 @@ const Dashboard: NextPage = () => {
 					<section className='mt-8'>
 						<h4 className='text-base mb-4'>
 							Welcome user,{' '}
-							<span className='text-2xl text-purple-600'>{address}</span>
+							<span className='text-2xl text-orange-600'>{address}</span>
 						</h4>
 						<hr />
 						<div className='mt-16 flex justify-center items-center'>
